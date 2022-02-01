@@ -10,9 +10,10 @@ import IPython.display as ipd
 import libtsm
 import soundfile
 import pydub
+import pytsmod
 
 #check alignment: playback switching - 2 files
-def verify_tsm(x1,x2,fs,P, hop_size = 2205, dim_x1 = 0,dim_x2 = 0,combined = True):
+def verify_tsm(x1,x2,fs,P, hop_size = 2205, dim_x1 = 0,dim_x2 = 0,combined = True, method = "libtsm"):
   P_sample = []
   for i in range(len(P)):
     sample1, sample2 = librosa.frames_to_samples(P[i], hop_length=hop_size)
@@ -21,7 +22,14 @@ def verify_tsm(x1,x2,fs,P, hop_size = 2205, dim_x1 = 0,dim_x2 = 0,combined = Tru
   P_sample = np.array(P_sample)
 
   #TSM using WSOLA. Alternatives: OLA (only for percussive), PV-TSM
-  x2_stretched = libtsm.tsm.wsola_tsm(x2, alpha = P_sample)
+  if method == "libtsm":
+      x2_stretched = libtsm.tsm.wsola_tsm(x2, alpha = P_sample)
+  elif method == "wsola":
+      x2_stretched = pytsmod.wsola(x2, P_sample)
+  elif method == "ola":
+      x2_stretched = pytsmod.ola(x2, P_sample)
+  else:
+      raise ValueError("Invalid method:", method)
   x2_stretched = x2_stretched.reshape(len(x2_stretched))
 
   if combined == False:
