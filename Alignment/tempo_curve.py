@@ -36,7 +36,12 @@ def tempo_curve(P, window_size = 1, standard_tempo = 1, remove_outliers = True, 
         pos_rec2, pos_gtr2 = P[1:][i+postextend]
         dur_rec = pos_rec2 - pos_rec1
         dur_gtr = pos_gtr2 - pos_gtr1
-        tempo.append(standard_tempo * (dur_gtr / dur_rec))
+        if dur_gtr == 0 and dur_rec == 0:
+            tempo.append(1)
+        else:
+            if dur_rec == 0:
+                dur_rec == 0
+            tempo.append(standard_tempo * (dur_gtr / dur_rec))
         pos_rec1, pos_gtr1 = P[1:][i-preextend]
     
     #remove outliers > 3std from mean on log scale

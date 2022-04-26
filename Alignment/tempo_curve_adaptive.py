@@ -18,7 +18,7 @@ def tempo_curve_adaptive(P, window_size, standard_tempo = 1, remove_outliers = T
     P = strict_path(P)
     #extend indicies to resolve boundary issues
     preextend = window_size[0] #extend with first window_size
-    postextend = window_size[-1] # extend with final window_size
+    postextend = 2*window_size[-1] # extend with final window_size
     prelist = [[j,j] for j in range(-preextend,0)]
     last = P[-1]
     postlist = [[last[0]+j,last[1]+j] for j in range(0,postextend)]
@@ -35,6 +35,8 @@ def tempo_curve_adaptive(P, window_size, standard_tempo = 1, remove_outliers = T
         if dur_gtr == 0 and dur_rec == 0:
             tempo.append(1)
         else:
+            if dur_rec == 0:
+                dur_rec == 0
             tempo.append(standard_tempo * (dur_gtr / dur_rec))
         pos_rec1, pos_gtr1 = P[1:][i-prewindow]
     
